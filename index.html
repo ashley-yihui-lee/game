@@ -21,7 +21,7 @@
             background-color: var(--bg-cream);
             color: var(--text-dark);
             font-family: 'Nunito', sans-serif;
-            overflow: hidden; 
+            overflow: hidden; /* 禁止整個頁面捲動，只讓內部容器捲動 */
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
@@ -53,6 +53,20 @@
         .text-stroke-sm {
             -webkit-text-stroke: 0.8px #000000;
         }
+
+        /* 關鍵優化：iOS 慣性捲動與隱藏捲軸 */
+        .scroll-smooth-touch {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+        /* 隱藏捲軸但保留功能 (讓畫面更乾淨) */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body>
@@ -81,8 +95,14 @@
                 icon: '🎤',
                 color: 'bg-[#F48B94]',
                 text: 'text-black',
-                description: '2015-2025 Hit Makers',
-                words: ['Taylor Swift', 'Justin Bieber', 'Ariana Grande', 'BTS', 'BLACKPINK', 'Drake', 'Ed Sheeran', 'Adele', 'The Weeknd', 'Bruno Mars', 'Lady Gaga', 'Billie Eilish', 'Harry Styles', 'Dua Lipa', 'Post Malone', 'Kendrick Lamar', 'Bad Bunny', 'Olivia Rodrigo', 'Doja Cat', 'Travis Scott', 'Cardi B', 'SZA', 'Rihanna', 'Sabrina Carpenter', 'Chappell Roan', 'Shawn Mendes', 'Camila Cabello', 'Halsey', 'Miley Cyrus']
+                description: '2015-2025 Icons',
+                words: [
+                    'Taylor Swift', 'Justin Bieber', 'Ariana Grande', 'BTS', 'BLACKPINK', 'Drake', 'Ed Sheeran', 'Adele', 'The Weeknd', 'Bruno Mars', 
+                    'Lady Gaga', 'Billie Eilish', 'Harry Styles', 'Dua Lipa', 'Post Malone', 'Kendrick Lamar', 'Bad Bunny', 'Olivia Rodrigo', 'Doja Cat', 'Travis Scott', 
+                    'Cardi B', 'SZA', 'Rihanna', 'Sabrina Carpenter', 'Chappell Roan', 'Shawn Mendes', 'Camila Cabello', 'Halsey', 'Miley Cyrus', 'Katy Perry',
+                    'Sam Smith', 'Lizzo', 'Charlie Puth', 'Meghan Trainor', 'Sia', 'Nicki Minaj', 'Shakira', 'Beyoncé', 'Rosé', 'Lisa', 
+                    'Jungkook', 'Zendaya', 'Selena Gomez', 'Demi Lovato', 'J Jonas', 'Maroon 5', 'Imagine Dragons', 'Coldplay', 'One Direction', 'Fifth Harmony'
+                ]
             },
             {
                 id: 'hit-songs',
@@ -91,7 +111,13 @@
                 color: 'bg-[#6C5B7B]',
                 text: 'text-white',
                 description: 'Global Hits 2015-2025',
-                words: ['Uptown Funk', 'Shape of You', 'Despacito', 'Blinding Lights', 'Old Town Road', 'Bad Guy', 'Drivers License', 'As It Was', 'Flowers', 'Anti-Hero', 'Seven', 'Butter', 'Dynamite', 'Kill This Love', 'Stay', 'Peaches', 'Watermelon Sugar', 'Levitating', 'WAP', 'Savage', 'About Damn Time', 'Easy On Me', 'Hello', 'Cheap Thrills', 'Closer', 'Señorita', 'Thank U, Next', 'Espresso', 'Vampire']
+                words: [
+                    'Uptown Funk', 'Shape of You', 'Despacito', 'Blinding Lights', 'Old Town Road', 'Bad Guy', 'Drivers License', 'As It Was', 'Flowers', 'Anti-Hero', 
+                    'Seven', 'Butter', 'Dynamite', 'Kill This Love', 'Stay', 'Peaches', 'Watermelon Sugar', 'Levitating', 'WAP', 'Savage', 
+                    'About Damn Time', 'Easy On Me', 'Hello', 'Cheap Thrills', 'Closer', 'Señorita', 'Thank U, Next', 'Espresso', 'Vampire', 'Good 4 U',
+                    'Industry Baby', 'Montero', 'Kiss Me More', 'Stay with Me', 'Thinking Out Loud', 'See You Again', 'Sorry', 'Love Yourself', 'Work', 'One Dance',
+                    'God\'s Plan', 'Perfect', 'Havana', 'New Rules', 'Bad Blood', 'Shake It Off', 'Blank Space', 'Roar', 'Dark Horse', 'Counting Stars'
+                ]
             },
             {
                 id: 'mandopop',
@@ -100,7 +126,59 @@
                 color: 'bg-[#F7A8A6]',
                 text: 'text-black',
                 description: 'Artists & Songs',
-                words: ['周杰倫', '告白氣球', '蔡依林', '玫瑰少年', '五月天', '派對動物', '告五人', '在這座城市遺失了你', '想見你想見你想見你', '八三夭', '茄子蛋', '浪子回頭', '草東沒有派對', '鄧紫棋', '光年之外', '李榮浩', '烏梅子醬', '盧廣仲', '刻在我心底的名字', '田馥甄', '小幸運', '張惠妹', '連名帶姓', '林宥嘉', '兜圈', '周興哲', '以後別做朋友', '高爾宣', 'Without You', '韋禮安', '如果可以', '動力火車', '頑童 MJ116', 'Marz23', '理想混蛋']
+                words: [
+                    '周杰倫', '蔡依林', '五月天', '告五人', '八三夭', '茄子蛋', '草東沒有派對', '鄧紫棋', '李榮浩', '盧廣仲', 
+                    '田馥甄', '張惠妹', '林宥嘉', '周興哲', '高爾宣', '韋禮安', '動力火車', '頑童 MJ116', 'Marz23', '理想混蛋',
+                    '告白氣球', '玫瑰少年', '派對動物', '在這座城市遺失了你', '想見你想見你想見你', '浪子回頭', '光年之外', '烏梅子醬', '刻在我心底的名字', '小幸運',
+                    '連名帶姓', '兜圈', '以後別做朋友', 'Without You', '如果可以', '說好不哭', '不該', '體面', '修煉愛情', '可惜沒如果',
+                    '算什麼男人', '聽見下雨的聲音', '我還年輕 我還年輕', '大風吹', '愛你', '王心凌', '徐佳瑩', 'A-Lin', '魚丁糸', '蘇打綠', '吳卓源'
+                ]
+            },
+            {
+                id: 'kpop',
+                title: 'K-pop',
+                icon: '🫰',
+                color: 'bg-[#FDCA58]', 
+                text: 'text-black',
+                description: 'Idols & Hallyu Wave',
+                words: [
+                    'BTS', 'BLACKPINK', 'NewJeans', 'TWICE', 'Stray Kids', 'SEVENTEEN', 'EXO', 'IVE', 'LE SSERAFIM', '(G)I-DLE', 
+                    'aespa', 'NCT', 'Red Velvet', 'ITZY', 'TXT', 'ENHYPEN', 'Gangnam Style', 'Dynamite', 'Shut Down', 'Super Shy', 
+                    'OMG', 'Love Dive', 'Queencard', 'Cupid', 'Lisa', 'Jungkook', 'Jennie', 'V', 'Jimin', 'Jisoo', 
+                    'Rosé', 'Hanni', 'Felix', 'Wonyoung', 'Hyunjin', 'Bang Chan', 'Taeyong', 'Kai', 'IU', 'Psy',
+                    'Butter', 'Pink Venom', 'Hype Boy', 'Ditto', 'Antifragile', 'Next Level', 'S-Class', 'God\'s Menu', 'Fancy', 'Cheer Up',
+                    'How You Like That', 'Money', 'Flower', 'Seven', 'Like Crazy', 'Standing Next to You', 'Perfect Night', 'Baddie', 'Drama', 'Get A Guitar'
+                ]
+            },
+            {
+                id: 'geography',
+                title: 'Geography',
+                icon: '🌏',
+                color: 'bg-[#7FC7DB]', 
+                text: 'text-black',
+                description: 'Countries & Cities',
+                words: [
+                    'Taiwan', 'Japan', 'South Korea', 'United States', 'United Kingdom', 'France', 'Italy', 'Germany', 'Australia', 'Canada', 
+                    'Thailand', 'Vietnam', 'Singapore', 'New York', 'London', 'Paris', 'Tokyo', 'Seoul', 'Taipei', 'Los Angeles', 
+                    'San Francisco', 'Las Vegas', 'Hawaii', 'Bali', 'Mount Everest', 'The Great Wall', 'Eiffel Tower', 'Statue of Liberty', 'Pyramids of Giza', 'Grand Canyon',
+                    'Niagara Falls', 'Antarctica', 'The Louvre', 'Colosseum', 'Taj Mahal', 'Sydney Opera House', 'Machu Picchu', 'Santorini', 'Venice', 'Amsterdam',
+                    'Dubai', 'Hong Kong', 'Shanghai', 'Beijing', 'Kyoto', 'Osaka', 'Bangkok', 'Rome', 'Barcelona', 'Madrid', 'Berlin'
+                ]
+            },
+            {
+                id: 'history',
+                title: 'History',
+                icon: '📜',
+                color: 'bg-[#BF6C85]', 
+                text: 'text-white',
+                description: 'Figures & Events',
+                words: [
+                    'Albert Einstein', 'Cleopatra', 'Leonardo da Vinci', 'Napoleon', 'Abraham Lincoln', 'Martin Luther King Jr.', 'Nelson Mandela', 'Mahatma Gandhi', 'Queen Elizabeth II', 'Winston Churchill', 
+                    'Marie Curie', 'Isaac Newton', 'Charles Darwin', 'Wolfgang Amadeus Mozart', 'Ludwig van Beethoven', 'Vincent van Gogh', 'Pablo Picasso', 'William Shakespeare', 'Julius Caesar', 'Alexander the Great', 
+                    'Genghis Khan', 'World War II', 'Moon Landing', 'The Titanic', 'French Revolution', 'Industrial Revolution', 'The Renaissance', 'The Great Depression', 'The Cold War', 'Christopher Columbus',
+                    'George Washington', 'Thomas Jefferson', 'Benjamin Franklin', 'Queen Victoria', 'Henry VIII', 'Joan of Arc', 'Marco Polo', 'Amelia Earhart', 'Neil Armstrong', 'Steve Jobs',
+                    'Wright Brothers', 'Walt Disney', 'Mother Teresa', 'Princess Diana', 'Elvis Presley', 'Michael Jackson', 'Marilyn Monroe', 'Audrey Hepburn', 'Charlie Chaplin', 'The Beatles'
+                ]
             },
             {
                 id: 'throwback',
@@ -109,7 +187,13 @@
                 color: 'bg-[#60698A]',
                 text: 'text-white',
                 description: '2000-2015 Nostalgia',
-                words: ['Lady Gaga (Poker Face)', 'Justin Bieber (Baby)', 'One Direction', 'Katy Perry', 'Avril Lavigne', 'Blackberry', 'iPod Shuffle', 'MSN', 'Facebook Farmville', 'Angry Birds', 'Twilight Saga', 'Harry Potter', 'Hunger Games', 'Mean Girls', 'High School Musical', 'Gossip Girl', 'Nokia', 'The Avengers (2012)', 'Frozen (Let It Go)', 'Gangnam Style', 'Call Me Maybe', 'Rolling in the Deep', 'Single Ladies', 'Umbrella', 'Toxic', 'Hips Don\'t Lie']
+                words: [
+                    'Lady Gaga (Poker Face)', 'Justin Bieber (Baby)', 'One Direction', 'Katy Perry', 'Avril Lavigne', 'Blackberry', 'iPod Shuffle', 'MSN', 'Facebook Farmville', 'Angry Birds', 
+                    'Twilight Saga', 'Harry Potter', 'Hunger Games', 'Mean Girls', 'High School Musical', 'Gossip Girl', 'Nokia', 'The Avengers', 'Frozen (Let It Go)', 'Gangnam Style', 
+                    'Call Me Maybe', 'Rolling in the Deep', 'Single Ladies', 'Umbrella', 'Toxic', 'Hips Don\'t Lie', 'Finding Nemo', 'Shrek', 'Toy Story', 'Monsters Inc.',
+                    'Spider-Man', 'The Dark Knight', 'Inception', 'Avatar', 'Titanic', 'Lord of the Rings', 'Pirates of the Caribbean', 'Iron Man', 'Hannah Montana', 'Wizards of Waverly Place',
+                    'SpongeBob SquarePants', 'Phineas and Ferb', 'iCarly', 'Drake & Josh', 'Suite Life of Zack & Cody', 'Camp Rock', 'Jonas Brothers', 'High School Musical', 'Glee', 'American Idol'
+                ]
             },
             {
                 id: 'lit-major',
@@ -117,8 +201,14 @@
                 icon: '📚',
                 color: 'bg-[#E2BB78]',
                 text: 'text-black',
-                description: 'Authors & Classics',
-                words: ['Shakespeare', 'Jane Austen', 'Pride and Prejudice', '1984', 'George Orwell', 'The Great Gatsby', 'F. Scott Fitzgerald', 'Moby Dick', 'Herman Melville', 'Frankenstein', 'Mary Shelley', 'Virginia Woolf', 'Mrs. Dalloway', 'James Joyce', 'Ulysses', 'Beowulf', 'The Canterbury Tales', 'Geoffrey Chaucer', 'Samuel Beckett', 'Waiting for Godot', 'Sylvia Plath', 'The Bell Jar', 'T.S. Eliot', 'The Waste Land', 'Charlotte Perkins Gilman', 'Homer', 'The Odyssey', 'Dante Alighieri', 'The Divine Comedy', 'Franz Kafka', 'The Metamorphosis']
+                description: 'Authors & Books',
+                words: [
+                    'Shakespeare', 'Jane Austen', 'Pride and Prejudice', '1984', 'George Orwell', 'The Great Gatsby', 'F. Scott Fitzgerald', 'Moby Dick', 'Herman Melville', 'Frankenstein', 
+                    'Mary Shelley', 'Virginia Woolf', 'Mrs. Dalloway', 'James Joyce', 'Ulysses', 'Beowulf', 'The Canterbury Tales', 'Geoffrey Chaucer', 'Samuel Beckett', 'Waiting for Godot', 
+                    'Sylvia Plath', 'The Bell Jar', 'T.S. Eliot', 'The Waste Land', 'Charlotte Perkins Gilman', 'Homer', 'The Odyssey', 'Dante Alighieri', 'The Divine Comedy', 'Franz Kafka', 
+                    'The Metamorphosis', 'Romeo and Juliet', 'Hamlet', 'Macbeth', 'Othello', 'King Lear', 'A Midsummer Night\'s Dream', 'To Kill a Mockingbird', 'Harper Lee', 'J.D. Salinger',
+                    'The Catcher in the Rye', 'Ernest Hemingway', 'The Old Man and the Sea', 'Mark Twain', 'Huckleberry Finn', 'Charles Dickens', 'Great Expectations', 'A Tale of Two Cities', 'Oliver Twist', 'Jane Eyre'
+                ]
             },
             {
                 id: 'movies',
@@ -127,16 +217,13 @@
                 color: 'bg-[#507E65]',
                 text: 'text-white',
                 description: 'Blockbusters 2015-2025',
-                words: ['Avengers: Endgame', 'Barbie', 'Oppenheimer', 'Everything Everywhere All At Once', 'Parasite', 'La La Land', 'Spider-Man: No Way Home', 'Dune', 'Top Gun: Maverick', 'Black Panther', 'Joker', 'Coco', 'Inside Out', 'Zootopia', 'Get Out', 'A Star Is Born', 'Crazy Rich Asians', 'Bohemian Rhapsody', 'Avatar: The Way of Water', 'The Batman', 'Wonka', 'Deadpool', 'Wonder Woman', 'Mad Max: Fury Road', 'Interstellar', 'Knives Out', 'Moana']
-            },
-            {
-                id: 'viral',
-                title: 'Viral',
-                icon: '🔥',
-                color: 'bg-[#FDCA58]',
-                text: 'text-black',
-                description: 'Memes 2015-2025',
-                words: ['Skibidi Toilet', 'Rizz', 'Fanum Tax', 'Among Us', 'Squid Game', 'Barbenheimer', 'Ice Bucket Challenge', 'Pokemon Go', 'Fidget Spinner', 'Dab', 'Floss Dance', 'Old Town Road', 'TikTok', 'Area 51 Raid', 'Ok Boomer', 'Karen', 'Tiger King', 'Wordle', 'Roman Empire', 'Girl Dinner', 'Beige Flag', 'The Ick', 'Main Character Energy', 'Slay', 'Tea (Spill the tea)', 'Cap / No Cap', 'Simp', 'Cringe']
+                words: [
+                    'Avengers: Endgame', 'Barbie', 'Oppenheimer', 'Everything Everywhere All At Once', 'Parasite', 'La La Land', 'Spider-Man: No Way Home', 'Dune', 'Top Gun: Maverick', 'Black Panther', 
+                    'Joker', 'Coco', 'Inside Out', 'Zootopia', 'Get Out', 'A Star Is Born', 'Crazy Rich Asians', 'Bohemian Rhapsody', 'Avatar: The Way of Water', 'The Batman', 
+                    'Wonka', 'Deadpool', 'Wonder Woman', 'Mad Max: Fury Road', 'Interstellar', 'Knives Out', 'Moana', 'Encanto', 'Frozen II', 'Toy Story 4',
+                    'The Super Mario Bros. Movie', 'Guardians of the Galaxy', 'Doctor Strange', 'Thor: Ragnarok', 'Captain Marvel', 'Aquaman', 'Shazam!', 'Venom', 'Jumanji', 'It',
+                    'A Quiet Place', 'Us', 'Nope', 'Midsommar', 'Hereditary', 'The Menu', 'Glass Onion', 'Cruella', 'Elvis', 'Rocketman'
+                ]
             },
             {
                 id: 'brands',
@@ -145,7 +232,13 @@
                 color: 'bg-[#F8B196]',
                 text: 'text-black',
                 description: 'Trending Brands',
-                words: ['Stanley Cup', 'TikTok', 'Shein', 'Temu', 'ChatGPT', 'Tesla', 'Spotify', 'Netflix', 'Discord', 'Roblox', 'Fortnite', 'Instagram', 'Crocs', 'Lululemon', 'Sephora', 'Starbucks', 'Nike', 'Apple', 'Dyson', 'Casetify', 'Uber', 'Airbnb', 'Zoom', 'Peloton', 'Impossible Burger', 'Oatly', 'Birkenstock', 'Uniqlo', 'Zara']
+                words: [
+                    'Stanley Cup', 'TikTok', 'Shein', 'Temu', 'ChatGPT', 'Tesla', 'Spotify', 'Netflix', 'Discord', 'Roblox', 
+                    'Fortnite', 'Instagram', 'Crocs', 'Lululemon', 'Sephora', 'Starbucks', 'Nike', 'Apple', 'Dyson', 'Casetify', 
+                    'Uber', 'Airbnb', 'Zoom', 'Peloton', 'Impossible Burger', 'Oatly', 'Birkenstock', 'Uniqlo', 'Zara', 'H&M',
+                    'Gucci', 'Louis Vuitton', 'Prada', 'Chanel', 'Dior', 'Hermès', 'Balenciaga', 'Versace', 'Fendi', 'Burberry',
+                    'Adidas', 'Puma', 'New Balance', 'Vans', 'Converse', 'The North Face', 'Patagonia', 'Arc\'teryx', 'Yeti', 'Hydro Flask'
+                ]
             }
         ];
 
@@ -277,8 +370,9 @@
 
             if (gameState === 'menu') {
                 return (
-                    <div className="min-h-screen pattern-dots flex flex-col pb-10">
-                        <header className="p-4 flex justify-between items-center sticky top-0 z-10 bg-[#FFF4E8]/95 backdrop-blur-sm border-b-[3px] border-black">
+                    // 改用 h-screen 來限制高度，讓內部 scroll-container 發揮作用
+                    <div className="h-screen pattern-dots flex flex-col font-nunito">
+                        <header className="p-4 flex justify-between items-center sticky top-0 z-10 bg-[#FFF4E8]/95 backdrop-blur-sm border-b-[3px] border-black flex-none">
                             <div>
                                 <h1 className="text-3xl font-titan text-[#F48B94] uppercase tracking-wider text-stroke drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
                                     Guess What?
@@ -295,8 +389,10 @@
                             </div>
                         </header>
 
-                        <main className="flex-1 p-4 overflow-y-auto">
-                            <div className="grid grid-cols-2 gap-4">
+                        {/* 加入 scroll-smooth-touch 和 no-scrollbar */}
+                        <main className="flex-1 p-4 overflow-y-auto scroll-smooth-touch no-scrollbar">
+                            {/* 增加 padding-bottom 確保底部不被切斷 */}
+                            <div className="grid grid-cols-2 gap-4 pb-32">
                                 {CATEGORIES.map((cat) => (
                                     <button
                                         key={cat.id}
@@ -408,7 +504,6 @@
 
                         <div className="flex-1 flex items-center justify-center p-4 relative">
                             <div className="text-center w-full max-w-2xl px-2">
-                                {/* 字體大小調整：縮小一點以容納長標題 */}
                                 <h2 className={`text-5xl md:text-8xl font-titan leading-tight tracking-tight select-none break-words ${currentCategory.text} ${isWhiteText(currentCategory) ? 'text-stroke drop-shadow-[6px_6px_0_rgba(0,0,0,1)]' : ''}`}>
                                     {gameWords[currentIndex]}
                                 </h2>
