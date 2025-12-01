@@ -5,51 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Guess What? 2025</title>
     
-    <!-- 1. 載入 React 和 ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- 2. 載入 Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- 3. 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 4. 載入字體 -->
     <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 
-    <!-- 5. 自訂樣式 -->
     <style>
+        :root {
+            --bg-cream: #FFF4E8;
+            --text-dark: #000000;
+        }
+
         body {
-            background-color: #FBF6EF;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
             font-family: 'Nunito', sans-serif;
             overflow: hidden; 
             touch-action: manipulation;
-            user-select: none; /* 防止長按選取文字 */
+            user-select: none;
             -webkit-user-select: none;
         }
         .font-titan { font-family: 'Titan One', cursive; }
         
         .pattern-dots {
-            background-image: radial-gradient(#D6CCC2 2px, transparent 2px);
-            background-size: 20px 20px;
+            background-image: radial-gradient(#E8E7E5 2px, transparent 2px);
+            background-size: 24px 24px;
         }
 
         .brutal-shadow {
-            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
-            border: 3px solid black;
+            box-shadow: 4px 4px 0px 0px #000000;
+            border: 3px solid #000000;
         }
         .brutal-shadow:active {
-            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+            box-shadow: 2px 2px 0px 0px #000000;
             transform: translate(2px, 2px);
         }
 
+        .border-black {
+            border-color: #000000;
+        }
+
         .text-stroke {
-            -webkit-text-stroke: 1.5px black;
+            -webkit-text-stroke: 1.5px #000000;
             paint-order: stroke fill;
         }
         .text-stroke-sm {
-            -webkit-text-stroke: 0.8px black;
+            -webkit-text-stroke: 0.8px #000000;
         }
     </style>
 </head>
@@ -60,7 +62,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // --- ICONS ---
         const Icons = {
             Play: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>,
             Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>,
@@ -70,8 +71,7 @@
             Clock: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
             Settings: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
             ArrowLeft: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>,
-            HelpCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>,
-            Smartphone: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+            HelpCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
         };
 
         const CATEGORIES = [
@@ -79,55 +79,73 @@
                 id: 'pop-stars',
                 title: 'Pop Stars',
                 icon: '🎤',
-                color: 'bg-[#FF4D8D]',
-                text: 'text-white',
-                description: 'Icons of 2024-2025',
-                words: ['Sabrina Carpenter', 'Chappell Roan', 'Charli XCX', 'Taylor Swift', 'Billie Eilish', 'Kendrick Lamar', 'Bad Bunny', 'The Weeknd', 'Bruno Mars', 'Lady Gaga', 'SZA', 'Tate McRae', 'Benson Boone', 'Teddy Swims', 'Shaboozey', 'Post Malone', 'Olivia Rodrigo', 'Dua Lipa', 'Ariana Grande', 'Rosé', 'Tyla', 'Ice Spice', 'Central Cee', 'Gracie Abrams', 'Harry Styles', 'Doja Cat', 'Miley Cyrus', 'Beyoncé', 'Rihanna', 'Travis Scott']
+                color: 'bg-[#F48B94]',
+                text: 'text-black',
+                description: '2015-2025 Hit Makers',
+                words: ['Taylor Swift', 'Justin Bieber', 'Ariana Grande', 'BTS', 'BLACKPINK', 'Drake', 'Ed Sheeran', 'Adele', 'The Weeknd', 'Bruno Mars', 'Lady Gaga', 'Billie Eilish', 'Harry Styles', 'Dua Lipa', 'Post Malone', 'Kendrick Lamar', 'Bad Bunny', 'Olivia Rodrigo', 'Doja Cat', 'Travis Scott', 'Cardi B', 'SZA', 'Rihanna', 'Sabrina Carpenter', 'Chappell Roan', 'Shawn Mendes', 'Camila Cabello', 'Halsey', 'Miley Cyrus']
             },
             {
                 id: 'hit-songs',
                 title: 'Hit Songs',
                 icon: '🎵',
-                color: 'bg-[#8B5CF6]',
+                color: 'bg-[#6C5B7B]',
                 text: 'text-white',
-                description: 'Viral Hits & Bops',
-                words: ['Espresso', 'Good Luck, Babe!', 'Birds of a Feather', 'Not Like Us', 'Lose Control', 'Beautiful Things', 'A Bar Song (Tipsy)', 'Die With A Smile', 'Pink Pony Club', 'Hot to Go!', 'Apple', '360', 'Guess', 'Million Dollar Baby', 'Texas Hold \'Em', 'Fortnight', 'We Can\'t Be Friends', 'I Had Some Help', 'Lunch', 'Taste', 'Please Please Please', 'Diet Pepsi', 'Paint The Town Red', 'Vampire', 'Cruel Summer', 'Greedy', 'Stick Season', 'Too Sweet', 'Water', 'Snooze']
+                description: 'Global Hits 2015-2025',
+                words: ['Uptown Funk', 'Shape of You', 'Despacito', 'Blinding Lights', 'Old Town Road', 'Bad Guy', 'Drivers License', 'As It Was', 'Flowers', 'Anti-Hero', 'Seven', 'Butter', 'Dynamite', 'Kill This Love', 'Stay', 'Peaches', 'Watermelon Sugar', 'Levitating', 'WAP', 'Savage', 'About Damn Time', 'Easy On Me', 'Hello', 'Cheap Thrills', 'Closer', 'Señorita', 'Thank U, Next', 'Espresso', 'Vampire']
+            },
+            {
+                id: 'mandopop',
+                title: 'Mandopop',
+                icon: '🇹🇼', 
+                color: 'bg-[#F7A8A6]',
+                text: 'text-black',
+                description: 'Artists & Songs',
+                words: ['周杰倫', '告白氣球', '蔡依林', '玫瑰少年', '五月天', '派對動物', '告五人', '在這座城市遺失了你', '想見你想見你想見你', '八三夭', '茄子蛋', '浪子回頭', '草東沒有派對', '鄧紫棋', '光年之外', '李榮浩', '烏梅子醬', '盧廣仲', '刻在我心底的名字', '田馥甄', '小幸運', '張惠妹', '連名帶姓', '林宥嘉', '兜圈', '周興哲', '以後別做朋友', '高爾宣', 'Without You', '韋禮安', '如果可以', '動力火車', '頑童 MJ116', 'Marz23', '理想混蛋']
+            },
+            {
+                id: 'throwback',
+                title: 'Throwback',
+                icon: '💾',
+                color: 'bg-[#60698A]',
+                text: 'text-white',
+                description: '2000-2015 Nostalgia',
+                words: ['Lady Gaga (Poker Face)', 'Justin Bieber (Baby)', 'One Direction', 'Katy Perry', 'Avril Lavigne', 'Blackberry', 'iPod Shuffle', 'MSN', 'Facebook Farmville', 'Angry Birds', 'Twilight Saga', 'Harry Potter', 'Hunger Games', 'Mean Girls', 'High School Musical', 'Gossip Girl', 'Nokia', 'The Avengers (2012)', 'Frozen (Let It Go)', 'Gangnam Style', 'Call Me Maybe', 'Rolling in the Deep', 'Single Ladies', 'Umbrella', 'Toxic', 'Hips Don\'t Lie']
+            },
+            {
+                id: 'lit-major',
+                title: 'Lit Major',
+                icon: '📚',
+                color: 'bg-[#E2BB78]',
+                text: 'text-black',
+                description: 'Authors & Classics',
+                words: ['Shakespeare', 'Jane Austen', 'Pride and Prejudice', '1984', 'George Orwell', 'The Great Gatsby', 'F. Scott Fitzgerald', 'Moby Dick', 'Herman Melville', 'Frankenstein', 'Mary Shelley', 'Virginia Woolf', 'Mrs. Dalloway', 'James Joyce', 'Ulysses', 'Beowulf', 'The Canterbury Tales', 'Geoffrey Chaucer', 'Samuel Beckett', 'Waiting for Godot', 'Sylvia Plath', 'The Bell Jar', 'T.S. Eliot', 'The Waste Land', 'Charlotte Perkins Gilman', 'Homer', 'The Odyssey', 'Dante Alighieri', 'The Divine Comedy', 'Franz Kafka', 'The Metamorphosis']
             },
             {
                 id: 'movies',
                 title: 'Movies',
                 icon: '🎬',
-                color: 'bg-[#3B82F6]',
+                color: 'bg-[#507E65]',
                 text: 'text-white',
-                description: 'Box Office 2025',
-                words: ['Wicked', 'Gladiator II', 'Deadpool & Wolverine', 'Inside Out 2', 'Dune: Part Two', 'Challengers', 'Twisters', 'Beetlejuice Beetlejuice', 'Moana 2', 'Mufasa', 'Sonic 3', 'Superman (2025)', 'A Minecraft Movie', 'Captain America 4', 'Thunderbolts*', 'Snow White', 'Zootopia 2', 'Joker: Folie à Deux', 'The Substance', 'Anora', 'Civil War', 'The Fall Guy', 'Kung Fu Panda 4', 'Godzilla x Kong', 'Kingdom of the Planet of the Apes', 'Furiosa', 'Despicable Me 4', 'Alien: Romulus', 'Nosferatu', 'Ballerina']
+                description: 'Blockbusters 2015-2025',
+                words: ['Avengers: Endgame', 'Barbie', 'Oppenheimer', 'Everything Everywhere All At Once', 'Parasite', 'La La Land', 'Spider-Man: No Way Home', 'Dune', 'Top Gun: Maverick', 'Black Panther', 'Joker', 'Coco', 'Inside Out', 'Zootopia', 'Get Out', 'A Star Is Born', 'Crazy Rich Asians', 'Bohemian Rhapsody', 'Avatar: The Way of Water', 'The Batman', 'Wonka', 'Deadpool', 'Wonder Woman', 'Mad Max: Fury Road', 'Interstellar', 'Knives Out', 'Moana']
             },
             {
                 id: 'viral',
                 title: 'Viral',
                 icon: '🔥',
-                color: 'bg-[#10B981]',
-                text: 'text-white',
-                description: 'Trends & Brainrot',
-                words: ['Skibidi Toilet', 'Rizz', 'Fanum Tax', 'Brainrot', 'Sigma', 'Mewing', 'Very Demure', 'Brat Summer', 'Pookie', 'Glazing', 'Yap / Yapping', 'Crash Out', 'Standing on Business', 'Grimace Shake', 'Baby Gronk', 'Livvy Dunne', 'Hawk Tuah Girl', 'TikTok Shop', 'Beige Flag', 'The Ick', 'Looksmaxxing', 'Mogging', 'GigaChad', 'Girl Dinner', 'Roman Empire', 'Karen', 'Bombastic Side Eye', 'Cap / No Cap', 'Delulu', 'Main Character Energy']
-            },
-            {
-                id: 'streaming',
-                title: 'Streaming',
-                icon: '📺',
-                color: 'bg-[#F43F5E]',
-                text: 'text-white',
-                description: 'Top TV Shows',
-                words: ['The Bear', 'House of the Dragon', 'Stranger Things', 'Wednesday', 'The Last of Us', 'Bridgerton', 'Squid Game', 'Fallout', 'Baby Reindeer', 'Euphoria', 'Succession', 'The White Lotus', 'Yellowstone', 'Severance', 'One Piece', 'Outer Banks', 'Ginny & Georgia', 'Emily in Paris', 'Shogun', 'True Detective']
+                color: 'bg-[#FDCA58]',
+                text: 'text-black',
+                description: 'Memes 2015-2025',
+                words: ['Skibidi Toilet', 'Rizz', 'Fanum Tax', 'Among Us', 'Squid Game', 'Barbenheimer', 'Ice Bucket Challenge', 'Pokemon Go', 'Fidget Spinner', 'Dab', 'Floss Dance', 'Old Town Road', 'TikTok', 'Area 51 Raid', 'Ok Boomer', 'Karen', 'Tiger King', 'Wordle', 'Roman Empire', 'Girl Dinner', 'Beige Flag', 'The Ick', 'Main Character Energy', 'Slay', 'Tea (Spill the tea)', 'Cap / No Cap', 'Simp', 'Cringe']
             },
             {
                 id: 'brands',
                 title: 'Brands',
                 icon: '🛍️',
-                color: 'bg-[#F59E0B]',
-                text: 'text-white',
-                description: 'Hype Brands',
-                words: ['Stanley Cup', 'TikTok', 'Shein', 'Temu', 'ChatGPT', 'Tesla', 'Prime', 'Spotify', 'Netflix', 'Discord', 'Roblox', 'Fortnite', 'Instagram', 'Crocs', 'Lululemon', 'Sephora', 'Erewhon', 'Starbucks', 'Nike', 'Apple Vision Pro']
+                color: 'bg-[#F8B196]',
+                text: 'text-black',
+                description: 'Trending Brands',
+                words: ['Stanley Cup', 'TikTok', 'Shein', 'Temu', 'ChatGPT', 'Tesla', 'Spotify', 'Netflix', 'Discord', 'Roblox', 'Fortnite', 'Instagram', 'Crocs', 'Lululemon', 'Sephora', 'Starbucks', 'Nike', 'Apple', 'Dyson', 'Casetify', 'Uber', 'Airbnb', 'Zoom', 'Peloton', 'Impossible Burger', 'Oatly', 'Birkenstock', 'Uniqlo', 'Zara']
             }
         ];
 
@@ -139,14 +157,10 @@
             const [score, setScore] = useState(0);
             const [timeLeft, setTimeLeft] = useState(60);
             const [results, setResults] = useState([]); 
-            const [settings, setSettings] = useState({ duration: 60, tiltEnabled: true });
+            const [settings, setSettings] = useState({ duration: 60 });
             const [showSettings, setShowSettings] = useState(false);
             const [showTutorial, setShowTutorial] = useState(false);
             
-            // Ref for tilt logic debounce
-            const isProcessingTilt = useRef(false);
-            const tiltNeutral = useRef(true); // Is phone currently in "middle" position?
-
             const timerRef = useRef(null);
             const audioContextRef = useRef(null);
 
@@ -159,28 +173,26 @@
                 const gainNode = ctx.createGain();
                 osc.connect(gainNode);
                 gainNode.connect(ctx.destination);
-                
                 const now = ctx.currentTime;
-
                 if (type === 'correct') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(500, now);
-                    osc.frequency.linearRampToValueAtTime(1000, now + 0.1);
-                    gainNode.gain.setValueAtTime(0.3, now);
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.linearRampToValueAtTime(800, now + 0.1);
+                    gainNode.gain.setValueAtTime(0.2, now);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                     osc.start(); osc.stop(now + 0.3);
                 } else if (type === 'pass') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(200, now);
-                    osc.frequency.linearRampToValueAtTime(100, now + 0.2);
-                    gainNode.gain.setValueAtTime(0.3, now);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(200, now + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, now);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                     osc.start(); osc.stop(now + 0.3);
                 } else if (type === 'end') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.setValueAtTime(500, now);
                     osc.frequency.linearRampToValueAtTime(200, now + 0.5);
-                    gainNode.gain.setValueAtTime(0.5, now);
+                    gainNode.gain.setValueAtTime(0.4, now);
                     gainNode.gain.linearRampToValueAtTime(0, now + 1);
                     osc.start(); osc.stop(now + 1);
                 }
@@ -205,33 +217,10 @@
                 setGameState('ready');
             };
 
-            // --- 請求動作權限 (iOS 13+ 需要) ---
-            const requestMotionPermission = async () => {
-                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    try {
-                        const response = await DeviceOrientationEvent.requestPermission();
-                        if (response === 'granted') {
-                            return true;
-                        } else {
-                            alert('需要動作權限才能使用體感控制喔！');
-                            return false;
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        return false;
-                    }
-                }
-                return true; // Android or non-iOS 13+ usually allows by default
-            };
-
-            const handleStartPlaying = async () => {
-                if (settings.tiltEnabled) {
-                    await requestMotionPermission();
-                }
+            const handleStartPlaying = () => {
                 setGameState('playing');
             };
 
-            // --- 遊戲邏輯 ---
             useEffect(() => {
                 if (gameState === 'playing') {
                     timerRef.current = setInterval(() => {
@@ -249,101 +238,26 @@
                 return () => clearInterval(timerRef.current);
             }, [gameState]);
 
-            // --- 鍵盤與體感偵測 ---
             useEffect(() => {
                 if (gameState !== 'playing') return;
-
                 const handleKeyDown = (e) => {
                     if (e.key === 'ArrowRight') handleAnswer('correct');
                     if (e.key === 'ArrowLeft') handleAnswer('pass');
                 };
-
-                const handleOrientation = (e) => {
-                    if (!settings.tiltEnabled) return;
-                    if (isProcessingTilt.current) return;
-
-                    // Beta: -180 to 180 (front/back tilt). 
-                    // 在橫向模式(Landscape)下，通常看 Gamma 或 Beta 依據鎖定方向而定
-                    // 簡單判斷：假設手機橫拿，螢幕朝向額頭外。
-                    // 往下點頭 (螢幕朝地) -> Beta/Gamma 值變動
-                    // 這裡使用簡易閾值，根據大多手機橫向行為
-                    
-                    const { beta, gamma } = e; 
-                    
-                    // 閾值設定 (這需要一點調試，取決於手機怎麼拿)
-                    // 假設手機橫拿貼額頭: Gamma ~ +/-90, Beta ~ 0
-                    // 往下倒 (點頭): Gamma 絕對值變小? 或是 Beta 變大?
-                    
-                    // 簡易邏輯：
-                    // 1. 動作偵測冷卻 (Debounce)
-                    // 2. 判斷是否「歸位」(回到額頭)
-                    
-                    // 測試值:
-                    // 往下 (Correct): gamma < 30 (or beta > 50 depending on orientation)
-                    // 往上 (Pass): gamma > 150 (or beta < -50)
-                    
-                    // 為了簡化，這裡用 gamma 作為主要判斷 (橫向模式常見)
-                    // 注意：不同瀏覽器軸向可能不同，這裡針對常見情況優化
-                    
-                    const tiltThreshold = 35; // 傾斜角度
-
-                    // 檢查是否「歸位」(大概垂直地面)
-                    if (Math.abs(gamma) > 60 && Math.abs(gamma) < 120) {
-                        tiltNeutral.current = true;
-                    }
-
-                    if (tiltNeutral.current) {
-                        // 往下倒 (螢幕朝地) -> Correct
-                        // 很多手機橫拿時，往下倒 Gamma 會趨近 0
-                        if (Math.abs(gamma) < tiltThreshold) {
-                            isProcessingTilt.current = true;
-                            tiltNeutral.current = false;
-                            handleAnswer('correct');
-                            setTimeout(() => isProcessingTilt.current = false, 1000); // 1秒冷卻
-                        }
-                        // 往上仰 (螢幕朝天) -> Pass
-                        // 往上仰 Gamma 會趨近 180
-                        else if (Math.abs(gamma) > (180 - tiltThreshold)) {
-                            isProcessingTilt.current = true;
-                            tiltNeutral.current = false;
-                            handleAnswer('pass');
-                            setTimeout(() => isProcessingTilt.current = false, 1000);
-                        }
-                    }
-                };
-
                 window.addEventListener('keydown', handleKeyDown);
-                if (settings.tiltEnabled) {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                }
-
                 return () => {
                     window.removeEventListener('keydown', handleKeyDown);
-                    window.removeEventListener('deviceorientation', handleOrientation);
                 };
-            }, [gameState, settings.tiltEnabled, gameWords, currentIndex]); // Dependencies need to include state used in handleAnswer
+            }, [gameState, gameWords, currentIndex]); 
 
             const handleAnswer = (status) => {
-                // 使用 Functional Update 確保拿到最新 state，避免閉包問題
-                setResults(prev => {
-                     // 這裡很 tricky, 因為我們需要在這裡觸發下一個詞
-                     // 但在 event listener 裡 state 可能是舊的
-                     // 所以我們只更新 results，然後用 useEffect 監聽 results 長度變化來換詞?
-                     // 更好的方法：直接用 ref 存 current index? 
-                     // 為了簡單，我們這裡允許依賴改變重新綁定 listener
-                     return [...prev, { word: gameWords[currentIndex], status }];
-                });
-                
+                setResults(prev => [...prev, { word: gameWords[currentIndex], status }]);
                 playSound(status);
                 if (status === 'correct') setScore(s => s + 1);
-
                 if (currentIndex < gameWords.length - 1) {
                     setCurrentIndex(prev => prev + 1);
                 } else {
-                    // reshuffle logic if needed, simple end for now
-                    // Loop deck logic:
                     setGameWords(prev => {
-                        // 簡單重洗剩下的
                         const nextIndex = currentIndex + 1;
                         if(nextIndex >= prev.length) return shuffleArray(prev);
                         return prev;
@@ -359,15 +273,14 @@
                 setCurrentCategory(null);
             };
 
-            // --- 畫面渲染 ---
+            const isWhiteText = (cat) => cat.text === 'text-white';
 
             if (gameState === 'menu') {
                 return (
-                    <div className="min-h-screen pattern-dots flex flex-col text-gray-900 pb-10">
-                        {/* Header */}
-                        <header className="p-4 flex justify-between items-center sticky top-0 z-10 bg-[#FBF6EF]/95 backdrop-blur-sm border-b-[3px] border-black">
+                    <div className="min-h-screen pattern-dots flex flex-col pb-10">
+                        <header className="p-4 flex justify-between items-center sticky top-0 z-10 bg-[#FFF4E8]/95 backdrop-blur-sm border-b-[3px] border-black">
                             <div>
-                                <h1 className="text-3xl font-titan text-[#FF4D8D] uppercase tracking-wider text-stroke drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                                <h1 className="text-3xl font-titan text-[#F48B94] uppercase tracking-wider text-stroke drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
                                     Guess What?
                                 </h1>
                                 <span className="text-xs font-black bg-black text-white px-2 py-0.5 inline-block transform -rotate-2 rounded-sm">2025 EDITION</span>
@@ -382,7 +295,6 @@
                             </div>
                         </header>
 
-                        {/* Categories */}
                         <main className="flex-1 p-4 overflow-y-auto">
                             <div className="grid grid-cols-2 gap-4">
                                 {CATEGORIES.map((cat) => (
@@ -397,16 +309,15 @@
                                         `}
                                     >
                                         <div className="text-5xl mb-2 filter drop-shadow-md transform group-hover:scale-110 transition-transform">{cat.icon}</div>
-                                        <h3 className="font-titan text-xl uppercase tracking-wide text-stroke-sm drop-shadow-md leading-5">{cat.title}</h3>
+                                        <h3 className={`font-titan text-lg uppercase tracking-wide leading-5 ${isWhiteText(cat) ? 'text-stroke-sm drop-shadow-md' : ''}`}>{cat.title}</h3>
                                     </button>
                                 ))}
                             </div>
                         </main>
 
-                        {/* Settings Modal */}
                         {showSettings && (
                             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-                                <div className="bg-[#FFEB3B] brutal-shadow rounded-2xl w-full max-w-sm p-6 relative border-[3px] border-black">
+                                <div className="bg-[#FDCA58] brutal-shadow rounded-2xl w-full max-w-sm p-6 relative border-[3px] border-black">
                                     <button onClick={() => setShowSettings(false)} className="absolute top-4 right-4 bg-white border-2 border-black rounded-full p-1 hover:bg-gray-100">
                                         <Icons.X />
                                     </button>
@@ -429,46 +340,26 @@
                                                 ))}
                                             </div>
                                         </div>
-                                        {/* Tilt Toggle */}
-                                        <div>
-                                            <label className="block text-sm font-black text-black mb-2 uppercase">Motion Control</label>
-                                            <div className="flex space-x-2">
-                                                <button 
-                                                    onClick={() => setSettings(s => ({ ...s, tiltEnabled: true }))}
-                                                    className={`flex-1 py-2 rounded-lg font-black border-2 border-black ${settings.tiltEnabled ? 'bg-black text-white' : 'bg-white text-black'}`}
-                                                >
-                                                    ON
-                                                </button>
-                                                <button 
-                                                    onClick={() => setSettings(s => ({ ...s, tiltEnabled: false }))}
-                                                    className={`flex-1 py-2 rounded-lg font-black border-2 border-black ${!settings.tiltEnabled ? 'bg-black text-white' : 'bg-white text-black'}`}
-                                                >
-                                                    OFF
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <button onClick={() => setShowSettings(false)} className="mt-8 w-full bg-[#FF4D8D] text-white border-[3px] border-black py-3 rounded-xl font-titan text-xl uppercase brutal-shadow active:translate-y-[2px] active:shadow-none transition-all">
+                                    <button onClick={() => setShowSettings(false)} className="mt-8 w-full bg-[#F48B94] text-white border-[3px] border-black py-3 rounded-xl font-titan text-xl uppercase brutal-shadow active:translate-y-[2px] active:shadow-none transition-all">
                                         Save
                                     </button>
                                 </div>
                             </div>
                         )}
 
-                        {/* Tutorial Modal */}
                         {showTutorial && (
                             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
                                 <div className="bg-white brutal-shadow rounded-2xl w-full max-w-sm p-6 text-center border-[3px] border-black">
                                     <div className="text-5xl mb-4 animate-bounce">🤔</div>
-                                    <h3 className="text-2xl font-titan mb-4">How to Play</h3>
-                                    <div className="space-y-3 text-left bg-[#FBF6EF] p-4 rounded-xl border-2 border-black mb-6 font-bold text-sm">
+                                    <h3 className="text-2xl font-titan mb-4 text-black">How to Play</h3>
+                                    <div className="space-y-3 text-left bg-[#FFF4E8] p-4 rounded-xl border-2 border-black mb-6 font-bold text-sm text-black">
                                         <p>1. 選一個主題</p>
-                                        <p>2. 手機橫向放額頭</p>
-                                        <p className="flex items-center"><Icons.Smartphone className="mr-2 w-4 h-4"/> 點頭 (螢幕朝地) = 答對</p>
-                                        <p className="flex items-center"><Icons.Smartphone className="mr-2 w-4 h-4"/> 抬頭 (螢幕朝天) = 跳過</p>
-                                        <p className="text-xs text-gray-500 mt-2">*iPhone 請允許動作權限</p>
+                                        <p>2. 手機放額頭</p>
+                                        <p>3. 答對按綠色 (Correct)</p>
+                                        <p>4. 沒中按紅色 (Pass)</p>
                                     </div>
-                                    <button onClick={() => setShowTutorial(false)} className="w-full bg-[#3B82F6] text-white border-[3px] border-black py-3 rounded-xl font-titan text-xl uppercase brutal-shadow active:translate-y-[2px] active:shadow-none transition-all">
+                                    <button onClick={() => setShowTutorial(false)} className="w-full bg-[#7FC7DB] text-white border-[3px] border-black py-3 rounded-xl font-titan text-xl uppercase brutal-shadow active:translate-y-[2px] active:shadow-none transition-all">
                                         Got It!
                                     </button>
                                 </div>
@@ -480,24 +371,25 @@
 
             if (gameState === 'ready') {
                 return (
-                    <div className={`fixed inset-0 ${currentCategory.color} flex flex-col items-center justify-center text-white z-50`}>
-                        <button onClick={returnToMenu} className="absolute top-6 left-6 p-3 bg-white text-black border-[3px] border-black rounded-full brutal-shadow active:translate-y-[2px] active:shadow-none transition-all">
+                    <div className={`fixed inset-0 ${currentCategory.color} flex flex-col items-center justify-center z-50`}>
+                        <button onClick={returnToMenu} className={`absolute top-6 left-6 p-3 bg-white ${isWhiteText(currentCategory) ? 'text-black' : currentCategory.text} border-[3px] border-black rounded-full brutal-shadow active:translate-y-[2px] active:shadow-none transition-all`}>
                             <Icons.ArrowLeft />
                         </button>
                         
-                        <div className="text-9xl mb-6 animate-bounce filter drop-shadow-[4px_4px_0_rgba(0,0,0,1)]">{currentCategory.icon}</div>
-                        <h2 className="text-6xl font-titan mb-4 text-center px-4 uppercase tracking-wide text-stroke drop-shadow-[4px_4px_0_rgba(0,0,0,1)]">
+                        <div className={`text-9xl mb-6 animate-bounce filter ${isWhiteText(currentCategory) ? 'drop-shadow-[4px_4px_0_rgba(0,0,0,1)]' : ''} ${currentCategory.text}`}>{currentCategory.icon}</div>
+                        <h2 className={`text-6xl font-titan mb-4 text-center px-4 uppercase tracking-wide ${currentCategory.text} ${isWhiteText(currentCategory) ? 'text-stroke drop-shadow-[4px_4px_0_rgba(0,0,0,1)]' : ''}`}>
                             {currentCategory.title}
                         </h2>
+                        
                         <div className="bg-black text-white px-6 py-2 rounded-lg font-bold transform -rotate-1 mb-12 border-2 border-white text-xl">
                             {currentCategory.description}
                         </div>
                         
-                        <button onClick={handleStartPlaying} className="bg-white text-black px-12 py-6 rounded-2xl border-[4px] border-black text-4xl font-titan brutal-shadow active:translate-y-[4px] active:shadow-none transition-all flex items-center space-x-3">
-                            <span className="fill-black"><Icons.Play /></span>
+                        <button onClick={handleStartPlaying} className={`bg-white ${isWhiteText(currentCategory) ? 'text-black' : currentCategory.text} px-12 py-6 rounded-2xl border-[4px] border-black text-4xl font-titan brutal-shadow active:translate-y-[4px] active:shadow-none transition-all flex items-center space-x-3`}>
+                            <span><Icons.Play /></span>
                             <span>START</span>
                         </button>
-                        <p className="mt-8 font-black uppercase tracking-widest bg-black/20 px-4 py-1 rounded-full text-sm">手機橫放額頭，點頭答對！</p>
+                        <p className={`mt-8 font-black uppercase tracking-widest bg-black/20 px-4 py-1 rounded-full text-sm ${isWhiteText(currentCategory) ? 'text-white' : 'text-black'}`}>Place on forehead</p>
                     </div>
                 );
             }
@@ -505,40 +397,33 @@
             if (gameState === 'playing') {
                 return (
                     <div className={`fixed inset-0 ${currentCategory.color} flex flex-col z-50`}>
-                        {/* Top Bar */}
-                        <div className="flex justify-between items-center p-6 text-white relative z-10">
-                            <button onClick={() => setGameState('results')} className="px-4 py-2 bg-black/20 rounded-lg font-bold border-2 border-white/50">
+                        <div className="flex justify-between items-center p-6 relative z-10">
+                            <button onClick={() => setGameState('results')} className={`px-4 py-2 bg-black/20 rounded-lg font-bold border-2 border-white/50 ${currentCategory.text}`}>
                                 End Game
                             </button>
                             <div className="flex items-center space-x-2 font-black font-mono text-4xl bg-white text-black px-4 py-2 rounded-xl border-[3px] border-black brutal-shadow">
-                                <span className={timeLeft <= 10 ? 'text-[#EF4444]' : ''}>{timeLeft}</span>
+                                <span className={timeLeft <= 10 ? 'text-[#F48B94]' : ''}>{timeLeft}</span>
                             </div>
                         </div>
 
-                        {/* Card Area */}
                         <div className="flex-1 flex items-center justify-center p-4 relative">
-                            <div className="text-center w-full max-w-2xl">
-                                <h2 className="text-7xl md:text-9xl font-titan text-white leading-tight tracking-tight text-stroke drop-shadow-[6px_6px_0_rgba(0,0,0,1)] select-none break-words">
+                            <div className="text-center w-full max-w-2xl px-2">
+                                {/* 字體大小調整：縮小一點以容納長標題 */}
+                                <h2 className={`text-5xl md:text-8xl font-titan leading-tight tracking-tight select-none break-words ${currentCategory.text} ${isWhiteText(currentCategory) ? 'text-stroke drop-shadow-[6px_6px_0_rgba(0,0,0,1)]' : ''}`}>
                                     {gameWords[currentIndex]}
                                 </h2>
-                                <p className="text-white/80 mt-8 font-bold text-lg animate-pulse">
-                                    {settings.tiltEnabled ? "點頭 = 正確  |  抬頭 = 跳過" : "請使用螢幕按鈕"}
-                                </p>
                             </div>
                         </div>
 
-                        {/* Controls */}
                         <div className="h-1/3 flex border-t-[4px] border-black">
-                            <button onClick={() => handleAnswer('pass')} className="flex-1 bg-[#EF4444] active:bg-[#B91C1C] text-white flex flex-col items-center justify-center border-r-[4px] border-black relative group">
+                            <button onClick={() => handleAnswer('pass')} className="flex-1 bg-[#F48B94] active:bg-[#e07a83] text-white flex flex-col items-center justify-center border-r-[4px] border-black relative group">
                                 <div className="transform scale-150 mb-2 drop-shadow-md"><Icons.X /></div>
                                 <span className="font-titan text-4xl uppercase tracking-wider text-stroke drop-shadow-md">PASS</span>
-                                <span className="absolute bottom-4 text-sm font-bold opacity-50">(或按 ←)</span>
                             </button>
                             
-                            <button onClick={() => handleAnswer('correct')} className="flex-1 bg-[#10B981] active:bg-[#047857] text-white flex flex-col items-center justify-center relative group">
+                            <button onClick={() => handleAnswer('correct')} className="flex-1 bg-[#ADDCC9] active:bg-[#9ccbb8] text-white flex flex-col items-center justify-center relative group">
                                 <div className="transform scale-150 mb-2 drop-shadow-md"><Icons.Check /></div>
                                 <span className="font-titan text-4xl uppercase tracking-wider text-stroke drop-shadow-md">CORRECT</span>
-                                <span className="absolute bottom-4 text-sm font-bold opacity-50">(或按 →)</span>
                             </button>
                         </div>
                     </div>
@@ -547,11 +432,11 @@
 
             if (gameState === 'results') {
                 return (
-                    <div className="min-h-screen pattern-dots flex flex-col z-50 bg-[#FBF6EF]">
-                        <div className={`${currentCategory.color} text-white p-8 rounded-b-[3rem] border-b-[4px] border-black shadow-xl flex flex-col items-center relative overflow-hidden`}>
-                           <div className="text-[#FFEB3B] drop-shadow-[4px_4px_0_rgba(0,0,0,1)] transform scale-150 mb-4"><Icons.Trophy /></div>
-                           <h2 className="text-3xl font-black uppercase tracking-widest bg-black px-4 py-1 transform -rotate-2 rounded-sm mb-4">Time's Up!</h2>
-                           <div className="text-9xl font-titan text-stroke drop-shadow-[6px_6px_0_rgba(0,0,0,1)]">{score}</div>
+                    <div className="min-h-screen pattern-dots flex flex-col z-50 bg-[#FFF4E8]">
+                        <div className={`${currentCategory.color} ${currentCategory.text} p-8 rounded-b-[3rem] border-b-[4px] border-black shadow-xl flex flex-col items-center relative overflow-hidden`}>
+                           <div className={`text-[#FDCA58] transform scale-150 mb-4 ${isWhiteText(currentCategory) ? 'drop-shadow-[4px_4px_0_rgba(0,0,0,1)]' : ''}`}><Icons.Trophy /></div>
+                           <h2 className="text-3xl font-black uppercase tracking-widest bg-black text-white px-4 py-1 transform -rotate-2 rounded-sm mb-4">Time's Up!</h2>
+                           <div className={`text-9xl font-titan ${isWhiteText(currentCategory) ? 'text-stroke drop-shadow-[6px_6px_0_rgba(0,0,0,1)]' : ''}`}>{score}</div>
                            <p className="font-black uppercase tracking-wider opacity-90 mt-2 text-xl">Correct Answers</p>
                         </div>
 
@@ -562,9 +447,9 @@
                                     <div key={idx} className="flex items-center justify-between p-4 bg-white rounded-xl border-[3px] border-black brutal-shadow">
                                         <span className="font-bold text-xl text-black font-nunito">{res.word}</span>
                                         {res.status === 'correct' ? (
-                                            <div className="bg-[#10B981] text-white p-2 rounded-lg border-2 border-black"><Icons.Check /></div>
+                                            <div className="bg-[#ADDCC9] text-white p-2 rounded-lg border-2 border-black"><Icons.Check /></div>
                                         ) : (
-                                            <div className="bg-[#EF4444] text-white p-2 rounded-lg border-2 border-black"><Icons.X /></div>
+                                            <div className="bg-[#F48B94] text-white p-2 rounded-lg border-2 border-black"><Icons.X /></div>
                                         )}
                                     </div>
                                 ))}
@@ -575,7 +460,7 @@
                             <button onClick={returnToMenu} className="flex-1 py-4 bg-gray-100 text-black border-[3px] border-black rounded-xl font-titan text-xl uppercase tracking-wide active:translate-y-[2px] transition-all">
                                 Menu
                             </button>
-                            <button onClick={() => startGame(currentCategory)} className="flex-1 py-4 bg-[#FFEB3B] text-black border-[3px] border-black rounded-xl font-titan text-xl uppercase tracking-wide brutal-shadow active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center space-x-2">
+                            <button onClick={() => startGame(currentCategory)} className="flex-1 py-4 bg-[#FDCA58] text-black border-[3px] border-black rounded-xl font-titan text-xl uppercase tracking-wide brutal-shadow active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center space-x-2">
                                 <span>Replay</span>
                             </button>
                         </div>
